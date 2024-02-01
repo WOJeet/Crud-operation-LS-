@@ -1,0 +1,155 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crud Operation</title>
+    <link rel="stylesheet" href="crud.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="con">
+      <div class="mainBackground">
+        <video autoplay="true" loop="true" preload="auto">
+          <source src="video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div class="text">
+          <h1>Welcome User Fill Up Your Details</h1>
+        </div>
+      </div>
+      <section>
+        <form id="empdetails" class="empdetails">
+          <fieldset class="leg">
+            <legend>Registration-Form</legend>
+            <div class="detailbox">
+              <label for="">Name:- </label>
+              <input
+                type="text"
+                id="fname"
+                class="fname"
+                placeholder="Enter Your Name...."
+              />
+              <p class="error"></p>
+            </div>
+            <div class="detailbox">
+              <label for="">Gender:- </label>
+              <select id="gender">
+                <option value="" selected disabled hidden>
+                  Select Your Gender....
+                </option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <p class="error"></p>
+            </div>
+            <div class="detailbox">
+              <label for="">Date of birth:- </label>
+              <input
+                type="date"
+                id="dob"
+                class="dob"
+                placeholder="Enter Your Date Of Birth...."
+              />
+              <p class="error"></p>
+            </div>
+            <div class="detailbox">
+              <label for="">Email:- </label>
+              <input
+                type="email"
+                id="email"
+                class="email"
+                placeholder="Enter Your Date Of Birth...."
+              />
+              <p class="error"></p>
+            </div>
+            <div class="detailbox">
+              <label for="">Phone:- </label>
+              <input
+                type="tel"
+                id="phnumber"
+                class="phnumber"
+                placeholder="Enter Your Phone Number...."
+              />
+              <p class="error"></p>
+            </div>
+            <div class="detailbox">
+              <label for="">Hobbies:- </label>
+              <input
+                type="text"
+                id="hobbies"
+                class="hobbies"
+                placeholder="Enter Your Hobbies"
+              />
+              <p class="error"></p>
+            </div>
+            <input type="submit" onclick="fetchemp(event)" value="Submit" />
+          </fieldset>
+        </form>
+        <h2>Your data will be display below</h2>
+        <div class="tbl">
+          <span>
+            <div>
+              Sort-table:
+              <input
+                type="checkbox"
+                id="myCheck"
+                onclick="sortEmployeesByName()"
+              />
+            </div>
+            <input id="gfg" type="text" placeholder="Search here" />
+          </span>
+          <table onload="readAll()">
+            <thead>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Gender</th>
+              <th>Dob</th>
+              <th>Email</th>
+              <th>Mobile_no</th>
+              <th>Hobbies</th>
+              <th>Operation</th>
+            </thead>
+            <tbody class="tbldata"></tbody>
+          </table>
+        </div>
+
+        <h2>Vertical View</h2>
+        <div class="tbl">
+          <table>
+            <tbody class="tbldataa"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <div class="bott">
+        <p class="lowerFooter">Copyright © Company LTD</p>
+      </div>
+    </footer>
+    <script src="crud.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var input = document.getElementById("gfg");
+        input.addEventListener("keyup", function () {
+          var filterValue = this.value.toLowerCase();
+          var rows = document.querySelectorAll(".tbldata tr");
+
+          rows.forEach(function (row) {
+            var textContent = row.textContent.toLowerCase();
+            if (textContent.indexOf(filterValue) > -1) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
