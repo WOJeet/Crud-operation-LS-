@@ -1,28 +1,13 @@
 // Function to populate horizontal table from local storage
-// Function to sort employees by name
-function sortEmployeesByName() {
-  if (checkbox.Checked == true) {
-    let employees = JSON.parse(localStorage.getItem("employees")) || [];
-    employees.sort((a, b) => {
-      return a.Name.localeCompare(b.Name);
-    });
-    localStorage.setItem("employees", JSON.stringify(employees));
-    populateTableFromLocalStorage(); //
-  }
+let isAscending = true;
 
-  function fetchemp(event) {
-    // Fetch employees here
-  }
-
-  // Call populateTableFromLocalStorage() to initially populate the table
-  populateTableFromLocalStorage();
-  populateVerticalTableFromLocalStorage();
-}
-
+// Function to populate horizontal table from local storage
 function populateTableFromLocalStorage() {
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   let tbody = document.querySelector(".tbldata");
   tbody.innerHTML = ""; // Clear existing content
+
+  employees = sortEmployees(employees, "Name");
 
   employees.forEach((emp, index) => {
     let row = `<tr>
@@ -40,6 +25,22 @@ function populateTableFromLocalStorage() {
       </tr>`;
     tbody.innerHTML += row;
   });
+}
+
+function sortEmployees(employees, property) {
+  return employees.sort((a, b) => {
+    const propA = a[property].toLowerCase();
+    const propB = b[property].toLowerCase();
+    return isAscending
+      ? propA.localeCompare(propB)
+      : propB.localeCompare(propA);
+  });
+}
+
+// Function to toggle sorting order and re-populate the table
+function toggleSort() {
+  isAscending = !isAscending;
+  populateTableFromLocalStorage();
 }
 
 // Function to populate vertical table from local storage
@@ -269,7 +270,7 @@ function fetchemp(event) {
         "Please enter a 10-digit phone number!";
     } else if (selectedDate >= today) {
       // alert("Please select a date in the past for Date of Birth!");
-      document.getElementById("phnumber").nextElementSibling.textContent =
+      document.getElementById("dob").nextElementSibling.textContent =
         "Please select a date in the past for Date of Birth!";
     }
   }

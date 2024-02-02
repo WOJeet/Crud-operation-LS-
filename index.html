@@ -95,14 +95,9 @@
         <div class="tbl">
           <span>
             <div>
-              Sort-table:
-              <input
-                type="checkbox"
-                id="myCheck"
-                onclick="sortEmployeesByName()"
-              />
+              <button onclick="toggleSort()">Sort by Name</button>
             </div>
-            <input id="gfg" type="text" placeholder="Search here" />
+            <input class="gfg" id="gfg" type="text" placeholder="Search here" />
           </span>
           <table onload="readAll()">
             <thead>
@@ -133,6 +128,7 @@
       </div>
     </footer>
     <script src="crud.js"></script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var input = document.getElementById("gfg");
