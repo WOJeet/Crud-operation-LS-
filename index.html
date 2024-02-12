@@ -24,80 +24,137 @@
         </div>
       </div>
       <section>
-        <form id="empdetails" class="empdetails">
+        <form id="empdetails" class="empdetails" onsubmit="fetchemp(event)">
           <fieldset class="leg">
-            <legend>Registration-Form</legend>
+            <legend>Registration Form</legend>
             <div class="detailbox">
-              <label for="">Name:- </label>
-              <input
-                type="text"
-                id="fname"
-                class="fname"
-                placeholder="Enter Your Name...."
-              />
-              <p class="error"></p>
+              <div class="container">
+                <div class="left"><label for="fname">Name:</label></div>
+                <div class="right">
+                  <input
+                    type="text"
+                    id="fname"
+                    class="fname"
+                    placeholder="Enter Your Name...."
+                    oninput="validateName()"
+                  />
+                </div>
+              </div>
+              <p class="error" id="fnameError"></p>
             </div>
+
             <div class="detailbox">
-              <label for="">Gender:- </label>
-              <select id="gender">
-                <option value="" selected disabled hidden>
-                  Select Your Gender....
-                </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <p class="error"></p>
+              <div class="container">
+                <div class="left">
+                  <label for="gender">Gender:</label>
+                </div>
+                <div class="right">
+                  <select id="gender" onchange="validateGender()">
+                    <option value="" selected disabled hidden>
+                      Select Your Gender....
+                    </option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+              </div>
+              <p class="error" id="genderError"></p>
             </div>
+
             <div class="detailbox">
-              <label for="">Date of birth:- </label>
-              <input
-                type="date"
-                id="dob"
-                class="dob"
-                placeholder="Enter Your Date Of Birth...."
-              />
-              <p class="error"></p>
+              <div class="container">
+                <div class="left">
+                  <label for="dob">Date of Birth:</label>
+                </div>
+                <div class="right">
+                  <input
+                    type="date"
+                    id="dob"
+                    class="dob"
+                    placeholder="Enter Your Date Of Birth...."
+                    oninput="validateDOB()"
+                  />
+                </div>
+              </div>
+              <p class="error" id="dobError"></p>
             </div>
+
             <div class="detailbox">
-              <label for="">Email:- </label>
-              <input
-                type="email"
-                id="email"
-                class="email"
-                placeholder="Enter Your Date Of Birth...."
-              />
-              <p class="error"></p>
+              <div class="container">
+                <div class="left">
+                  <label for="email">Email:</label>
+                </div>
+                <div class="right">
+                  <input
+                    type="email"
+                    id="email"
+                    class="email"
+                    placeholder="Enter Your Email...."
+                    oninput="validateEmail()"
+                  />
+                </div>
+              </div>
+              <p class="error" id="emailError"></p>
             </div>
+
             <div class="detailbox">
-              <label for="">Phone:- </label>
-              <input
-                type="tel"
-                id="phnumber"
-                class="phnumber"
-                placeholder="Enter Your Phone Number...."
-              />
-              <p class="error"></p>
+              <div class="container">
+                <div class="left">
+                  <label for="phnumber">Phone:</label>
+                </div>
+                <div class="right">
+                  <input
+                    type="tel"
+                    id="phnumber"
+                    class="phnumber"
+                    placeholder="Enter Your Phone Number...."
+                    oninput="validatePhoneNumber()"
+                  />
+                </div>
+              </div>
+              <p class="error" id="phnumberError"></p>
             </div>
+
             <div class="detailbox">
-              <label for="">Hobbies:- </label>
-              <input
-                type="text"
-                id="hobbies"
-                class="hobbies"
-                placeholder="Enter Your Hobbies"
-              />
-              <p class="error"></p>
+              <div class="container">
+                <div class="left">
+                  <label for="hobbies">Hobbies:</label>
+                </div>
+                <div class="right">
+                  <input
+                    type="text"
+                    id="hobbies"
+                    class="hobbies"
+                    placeholder="Enter Your Hobbies"
+                    oninput="validateHobbies()"
+                  />
+                </div>
+              </div>
+              <p class="error" id="hobbiesError"></p>
             </div>
-            <input type="submit" onclick="fetchemp(event)" value="Submit" />
+
+            <input type="submit" value="Submit" id="submit-btn" />
+            <input
+              type="submit"
+              value="Update"
+              id="update-btn"
+              style="display: none"
+            />
+            <button
+              type="button"
+              id="cancel-btn"
+              style="display: none"
+              onclick="cancelEditing()"
+            >
+              Cancel
+            </button>
           </fieldset>
         </form>
+
         <h2>Your data will be display below</h2>
         <div class="tbl">
           <span>
-            <div>
-              <button onclick="toggleSort()">Sort by Name</button>
-            </div>
-            <input class="gfg" id="gfg" type="text" placeholder="Search here" />
+            <input id="gfg" type="text" placeholder="Search here" />
           </span>
           <table onload="readAll()">
             <thead>
@@ -114,7 +171,7 @@
           </table>
         </div>
 
-        <h2>Vertical View</h2>
+        <h2>Advance Tables</h2>
         <div class="tbl">
           <table>
             <tbody class="tbldataa"></tbody>
@@ -128,7 +185,6 @@
       </div>
     </footer>
     <script src="crud.js"></script>
-
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var input = document.getElementById("gfg");

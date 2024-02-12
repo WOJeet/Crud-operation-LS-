@@ -1,14 +1,7 @@
-// Function to populate horizontal table from local storage
-let isAscending = true;
-
-// Function to populate horizontal table from local storage
 function populateTableFromLocalStorage() {
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   let tbody = document.querySelector(".tbldata");
-  tbody.innerHTML = ""; // Clear existing content
-
-  employees = sortEmployees(employees, "Name");
-
+  tbody.innerHTML = "";
   employees.forEach((emp, index) => {
     let row = `<tr>
         <td>${index + 1}</td>
@@ -27,29 +20,11 @@ function populateTableFromLocalStorage() {
   });
 }
 
-function sortEmployees(employees, property) {
-  return employees.sort((a, b) => {
-    const propA = a[property].toLowerCase();
-    const propB = b[property].toLowerCase();
-    return isAscending
-      ? propA.localeCompare(propB)
-      : propB.localeCompare(propA);
-  });
-}
-
-// Function to toggle sorting order and re-populate the table
-function toggleSort() {
-  isAscending = !isAscending;
-  populateTableFromLocalStorage();
-}
-
-// Function to populate vertical table from local storage
 function populateVerticalTableFromLocalStorage() {
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   let tbody = document.querySelector(".tbldataa");
-  tbody.innerHTML = ""; // Clear existing content
+  tbody.innerHTML = "";
 
-  // Create an object to store data for each heading
   let dataByHeading = {
     ID: [],
     Name: [],
@@ -58,10 +33,9 @@ function populateVerticalTableFromLocalStorage() {
     Email: [],
     Mobile_no: [],
     Hobbies: [],
-    Operation: [], // Added for operation buttons
+    Operation: [],
   };
 
-  // Fill the data for each heading
   employees.forEach((emp, index) => {
     dataByHeading["ID"].push(index + 1);
     dataByHeading["Name"].push(emp["Name"] || "");
@@ -71,7 +45,6 @@ function populateVerticalTableFromLocalStorage() {
     dataByHeading["Mobile_no"].push(emp["Phnumber"] || "");
     dataByHeading["Hobbies"].push(emp["Hobbies"] || "");
 
-    // Add buttons for operation
     let operationButtons = `
             <button onclick="editEmployee(${index})" class="edit-btn">Edit</button>
             <button onclick="deleteEmployee(${index})" class="remove-btn">Delete</button>
@@ -79,7 +52,6 @@ function populateVerticalTableFromLocalStorage() {
     dataByHeading["Operation"].push(operationButtons);
   });
 
-  // Iterate over headings and display data vertically
   Object.keys(dataByHeading).forEach((heading) => {
     let row = document.createElement("tr");
     let headingCell = document.createElement("th");
@@ -88,7 +60,7 @@ function populateVerticalTableFromLocalStorage() {
 
     dataByHeading[heading].forEach((data) => {
       let dataCell = document.createElement("td");
-      dataCell.innerHTML = data; // Use innerHTML to render buttons
+      dataCell.innerHTML = data;
       row.appendChild(dataCell);
     });
 
@@ -96,13 +68,13 @@ function populateVerticalTableFromLocalStorage() {
   });
 }
 
-// Call both functions to populate both horizontal and vertical views when the page loads
-window.addEventListener("load", () => {
+window.onload = () => {
   populateTableFromLocalStorage();
   populateVerticalTableFromLocalStorage();
-});
-// Function to delete an employee
+};
+
 function deleteEmployee(index) {
+  alert("Are you sure you want delete?");
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   employees.splice(index, 1);
   localStorage.setItem("employees", JSON.stringify(employees));
@@ -110,122 +82,235 @@ function deleteEmployee(index) {
   populateVerticalTableFromLocalStorage();
 }
 
-// Function to edit an employee
 function editEmployee(index) {
-  alert("You are in updating  mode.");
+  alert("You are in updating mode.");
+
   document.getElementsByClassName("empdetails")[0].scrollIntoView();
+
+  // Retrieve the employee data
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   let emp = employees[index];
 
-  // Set the form fields with the employee's details
-  document.getElementById("fname").value = emp.Name;
-  document.getElementById("gender").value = emp.Gender;
-  document.getElementById("dob").value = emp.Dob;
-  document.getElementById("email").value = emp.Email;
-  document.getElementById("phnumber").value = emp.Phnumber;
-  document.getElementById("hobbies").value = emp.Hobbies.join(",");
+  // Populate the form fields with employee data
+  getById("fname").value = emp.Name;
+  getById("gender").value = emp.Gender;
+  getById("dob").value = emp.Dob;
+  getById("email").value = emp.Email;
+  getById("phnumber").value = emp.Phnumber;
+  getById("hobbies").value = emp.Hobbies.join(",");
 
-  // Store the index of the employee being edited in local storage
   localStorage.setItem("editIndex", index);
 
-  // Hide the submit button during edit
-  document.getElementById("submit-btn").style.display = "none";
+  getById("submit-btn").style.display = "none";
+  getById("update-btn").style.display = "flex";
+  getById("cancel-btn").style.display = "flex";
 
-  // Display a save button to save the edited details
-  let saveButton = document.createElement("button");
-  saveButton.textContent = "Save";
-  saveButton.addEventListener("click", function () {
-    saveEditedDetails(index);
+  getById("update-btn").addEventListener("click", function () {
+    // Change the update button back to a submit button
+    getById("submit-btn").style.display = "flex";
+    getById("update-btn").style.display = "none";
+
+    // Hide the cancel button
+    getById("cancel-btn").style.display = "none";
   });
-  document.getElementById("empdetails").appendChild(saveButton);
+}
+
+function cancelEditing() {
+  // Display a confirmation dialog
+  let confirmation = confirm("Are you sure you want to cancel?");
+  // to empty  the fields
+  if (confirmation) {
+    getById("fname").value = "";
+    getById("gender").value = "";
+    getById("dob").value = "";
+    getById("email").value = "";
+    getById("phnumber").value = "";
+    getById("hobbies").value = "";
+
+    localStorage.removeItem("editIndex");
+
+    getById("update-btn").style.display = "none";
+    getById("cancel-btn").style.display = "none";
+    getById("submit-btn").style.display = "flex";
+  }
 }
 
 // Function to save edited details
 function saveEditedDetails(index) {
   let employees = JSON.parse(localStorage.getItem("employees")) || [];
   let emp = {
-    Name: document.getElementById("fname").value,
-    Gender: document.getElementById("gender").value,
-    Dob: document.getElementById("dob").value,
-    Email: document.getElementById("email").value,
-    Phnumber: document.getElementById("phnumber").value,
-    Hobbies: document.getElementById("hobbies").value.split(","),
+    Name: getById("fname").value,
+    Gender: getById("gender").value,
+    Dob: getById("dob").value,
+    Email: getById("email").value,
+    Phnumber: getById("phnumber").value,
+    Hobbies: getById("hobbies").value.split(","),
   };
 
   employees[index] = emp;
   localStorage.setItem("employees", JSON.stringify(employees));
   populateTableFromLocalStorage();
+  populateVerticalTableFromLocalStorage();
 
   // Show the submit button again and remove the save button
-  document.getElementById("submit-btn").style.display = "block";
-  document
-    .getElementById("empdetails")
-    .removeChild(document.querySelector("button"));
+  getById("submit-btn").style.display = "block";
+  getById("empdetails").removeChild(document.querySelector("button"));
+}
+
+function validateName() {
+  const nameInput = getById("fname");
+  const errorElement = getById("fnameError");
+  const name = nameInput.value.trim();
+
+  if (name === "") {
+    errorElement.textContent = "Name is required";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
+}
+
+function validateGender() {
+  const genderSelect = getById("gender");
+  const errorElement = getById("genderError");
+  const gender = genderSelect.value;
+
+  if (gender === "") {
+    errorElement.textContent = "Gender is required";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
+}
+
+function validateDOB() {
+  const dobInput = getById("dob");
+  const errorElement = getById("dobError");
+  const dob = new Date(dobInput.value); // this convert input value to the Date object
+  const today = new Date();
+
+  if (dob >= today) {
+    errorElement.textContent =
+      "Please select a date in the past for Date of Birth!";
+    errorElement.style.color = "red";
+    return false;
+  } else if (dobInput.value === "") {
+    errorElement.textContent = "Date of birth is required";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
+}
+
+function validateEmail() {
+  const emailInput = document.forms[0].elements.email;
+  const errorElement = getById("emailError");
+  const email = emailInput.value.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (email === "") {
+    errorElement.textContent = "Email is required";
+    errorElement.style.color = "red";
+    return false;
+  } else if (!emailRegex.test(email)) {
+    errorElement.textContent = "Invalid email format";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
+}
+
+function validatePhoneNumber() {
+  const phnumberInput = getById("phnumber");
+  const errorElement = getById("phnumberError");
+  const phnumber = phnumberInput.value.trim();
+  const phoneRegex = /^\d{10}$/;
+
+  if (phnumber === "") {
+    errorElement.textContent = "Phone number is required";
+    errorElement.style.color = "red";
+    return false;
+  } else if (!phoneRegex.test(phnumber)) {
+    errorElement.textContent = "Invalid phone number format";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
+}
+
+function validateHobbies() {
+  const hobbiesInput = getById("hobbies");
+  const errorElement = getById("hobbiesError");
+  const hobbies = hobbiesInput.value.trim();
+
+  if (hobbies === "") {
+    errorElement.textContent = "Hobbies are required";
+    errorElement.style.color = "red";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
+  }
 }
 
 function fetchemp(event) {
   event.preventDefault();
-  let name = document.getElementById("fname").value;
-  let gender = document.getElementById("gender").value;
-  let dob = document.getElementById("dob").value;
-  let email = document.getElementById("email").value;
-  let phnumber = document.getElementById("phnumber").value;
-  let hobbies = document.getElementById("hobbies").value.split(",");
 
-  // Regular expression for email validation
-  const emailRegex = /^\S+@\S+\.\S+$/;
+  // const nameInput = getById("fname");
+  // const genderInput = getById("gender");
+  // const dobInput = getById("dob");
+  // const emailInput = getById("email");
+  // const phnumberInput = getById("phnumber");
+  // const hobbiesInput = getById("hobbies");
 
-  // Regular expression for mobile number validation (exactly 10 digits)
-  const phoneRegex = /^\d{10}$/;
+  const nameInput = document.forms[0].fname;
+  const genderInput = document.forms[0].gender;
+  const dobInput = document.forms[0].dob;
+  const emailInput = document.forms[0].elements.email;
+  const phnumberInput = document.forms[0].elements.phnumber;
+  const hobbiesInput = document.forms[0].hobbies;
+
+  const name = nameInput.value;
+  const gender = genderInput.value;
+  const dob = dobInput.value;
+  const email = emailInput.value;
+  const phnumber = phnumberInput.value;
+  const hobbies = hobbiesInput.value.trim().split(",");
+
+  const isNameValid = validateName();
+  const isGenderValid = validateGender();
+  const isDobValid = validateDOB();
+  const isEmailValid = validateEmail();
+  const isPhnumberValid = validatePhoneNumber();
+  const isHobbiesValid = validateHobbies();
 
   // Get today's date for date of birth validation
   let today = new Date();
   let selectedDate = new Date(dob);
 
-  // Reset error messages
   document
     .querySelectorAll(".error")
     .forEach((error) => (error.textContent = ""));
 
-  let isValid = true;
+  let isValid =
+    isNameValid &&
+    isGenderValid &&
+    isDobValid &&
+    isEmailValid &&
+    isPhnumberValid &&
+    isHobbiesValid;
 
-  if (!name) {
-    document.getElementById("fname").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-  if (!gender) {
-    document.getElementById("gender").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-  if (!dob) {
-    document.getElementById("dob").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-  if (!email) {
-    document.getElementById("email").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-  if (!phnumber) {
-    document.getElementById("phnumber").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-  if (!hobbies) {
-    document.getElementById("hobbies").nextElementSibling.textContent =
-      "Please fill the Field!";
-    isValid = false;
-  }
-
-  if (
-    isValid &&
-    emailRegex.test(email) && // Check if email is valid
-    phoneRegex.test(phnumber) && // Check if phone number is valid
-    selectedDate < today // Check if selected date is in the past
-  ) {
+  if (isValid && selectedDate < today) {
     let emp = {
       Name: name,
       Gender: gender,
@@ -241,37 +326,60 @@ function fetchemp(event) {
     if (editIndex !== null && editIndex >= 0 && editIndex < employees.length) {
       // If editIndex exists and is valid, replace the employee data at that index
       employees[editIndex] = emp;
-      localStorage.removeItem("editIndex"); // Remove the editIndex after the edit
+      localStorage.removeItem("editIndex"); //To Remove the editIndex after the edit
     } else {
       // Otherwise, add the new employee to the list
       employees.push(emp);
+      alert("Data inserted!");
     }
 
     localStorage.setItem("employees", JSON.stringify(employees));
     populateTableFromLocalStorage();
     populateVerticalTableFromLocalStorage();
-    // Call the function after adding or editing an employee
+
+    // Clear input fields
+    nameInput.value = "";
+    genderInput.value = "";
+    dobInput.value = "";
+    emailInput.value = "";
+    phnumberInput.value = "";
+    hobbiesInput.value = "";
   } else {
     if (!isValid) {
-      alert("Please fill all the details!");
+      // Set error message in each input field's error element
+      if (!name) {
+        getById("fnameError").textContent = "Name is required";
+      }
+      if (!gender) {
+        getById("genderError").textContent = "Gender is required";
+      }
+      if (!dob) {
+        getById("dobError").textContent = "Date of birth is required";
+      }
+      if (!email) {
+        getById("emailError").textContent = "Email is required";
+      }
+      if (!phnumber) {
+        getById("phnumberError").textContent = "Phone number is required";
+      }
+      if (!hobbies) {
+        getById("hobbiesError").textContent = "Hobbies are required";
+      }
+
       // Optionally, you can also highlight the empty fields in red
-      document.querySelectorAll(".detailbox").forEach((detailbox) => {
-        if (!detailbox.querySelector("input").value) {
-          detailbox.style.border = "1px solidred";
+      var detailboxes = document.querySelectorAll(".detailbox");
+      detailboxes.forEach((detailbox) => {
+        if (!detailbox.querySelectorAll("input").value) {
+          detailbox.style.border = "1px solid red";
         }
       });
-    } else if (!emailRegex.test(email)) {
-      // alert("Please enter a valid email address!");
-      document.getElementById("email").nextElementSibling.textContent =
-        "Please enter a valid email address!";
-    } else if (!phoneRegex.test(phnumber)) {
-      // alert("Please enter a 10-digit phone number!");
-      document.getElementById("phnumber").nextElementSibling.textContent =
-        "Please enter a 10-digit phone number!";
     } else if (selectedDate >= today) {
-      // alert("Please select a date in the past for Date of Birth!");
-      document.getElementById("dob").nextElementSibling.textContent =
+      getById("dobError").textContent =
         "Please select a date in the past for Date of Birth!";
     }
   }
+}
+
+function getById(id) {
+  return document.getElementById(id);
 }
